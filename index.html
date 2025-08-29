@@ -19,7 +19,7 @@
             align-items: center;
             min-height: 100vh;
             color: #333;
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll on small devices */
         }
 
         /* Navigation Bar */
@@ -68,8 +68,9 @@
             max-width: 400px;
             width: 90%;
             animation: fadeIn 0.8s ease-out;
-            margin-top: 100px; /* Add margin to prevent content from going under the navbar */
+            margin-top: 100px;
             margin-bottom: 50px;
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         @keyframes fadeIn {
@@ -81,6 +82,7 @@
             color: #007bff;
             margin-bottom: 30px;
             font-weight: 600;
+            font-size: 2em;
         }
 
         /* Button Styling */
@@ -95,6 +97,8 @@
             transition: all 0.3s ease;
             outline: none;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%; /* Full width on small screens */
+            max-width: 300px;
         }
 
         #getLocationBtn:hover {
@@ -127,6 +131,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            box-sizing: border-box;
         }
 
         .location-card.show {
@@ -140,6 +145,7 @@
             margin-bottom: 15px;
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
+            font-size: 1.2em;
         }
 
         .location-card p {
@@ -187,8 +193,9 @@
             padding: 20px;
             text-align: center;
             font-size: 0.9em;
-            margin-top: auto; /* Push footer to the bottom */
+            margin-top: auto;
             border-top: 2px solid #007bff;
+            box-sizing: border-box;
         }
 
         .footer p {
@@ -209,15 +216,58 @@
             text-decoration: none;
             transition: color 0.3s ease;
         }
-        
+
         .footer a:hover {
             color: #00f2fe;
         }
-        
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
+        }
+
+        /* Media Queries for Responsiveness */
+
+        /* For screens smaller than 768px (tablets and mobile) */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+
+            .navbar-brand {
+                margin-bottom: 10px;
+            }
+
+            .navbar-links a {
+                margin: 0 10px;
+                font-size: 0.9em;
+            }
+
+            .container {
+                padding: 30px 20px;
+                margin-top: 110px; /* Adjust for stacked navbar */
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            #getLocationBtn {
+                padding: 12px 25px;
+                font-size: 16px;
+                max-width: none;
+            }
+
+            .footer p {
+                flex-direction: column;
+            }
+
+            .footer a {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
@@ -225,7 +275,6 @@
 
     <nav class="navbar">
         <a href="#" class="navbar-brand">VISHAL PATEL</a>
-        
     </nav>
 
     <div class="container">
@@ -249,7 +298,7 @@
             Designed with <i class="fas fa-heart heart-icon"></i> by VISHAL PATEL
         </p>
         <p>
-            <a href="tel:+918707852404"><i class="fas fa-phone-alt"></i> +91-8707852404</a> | <i class="fas fa-map-marker-alt"></i> Ghazipur, Uttar Pradesh, Pincode - 233227
+            <a href="tel:+918707852404"><i class="fas fa-phone-alt"></i> +91-8707852404</a> <i class="fas fa-map-marker-alt"></i> Ghazipur, Uttar Pradesh, Pincode - 233227
         </p>
     </footer>
 
