@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get My Location</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        p { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <button id="getLocationBtn">अपनी Location भेजें</button>
+
+    <p id="status"></p>
+
+    <script>
+        const button = document.getElementById('getLocationBtn');
+        const statusText = document.getElementById('status');
+
+        button.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                statusText.textContent = "Location access की अनुमति का इंतजार है...";
+                navigator.geolocation.getCurrentPosition(success, error);
+            } else {
+                statusText.textContent = "आपका ब्राउज़र Geolocation को support नहीं करता है।";
+            }
+        });
+
+        function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            statusText.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+            fetch('http://localhost:3000/location-receiver', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ latitude: latitude, longitude: longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusText.textContent += "\nलोकेशन सफलतापूर्वक भेज दी गई है!";
+            })
+            .catch(error => {
+                statusText.textContent += "\nलोकेशन भेजने में कोई दिक्कत हुई।";
+            });
+        }
+
+        function error(err) {
+            statusText.textContent = `लोकेशन प्राप्त करने में कोई दिक्कत हुई: ${err.message}`;
+        }
+    </script>
+
+</body>
+</html>
