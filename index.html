@@ -1,399 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Send My Location</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden; /* Prevent horizontal scroll on small devices */
-        }
+      /* Global Styles */
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+        overflow-x: hidden; /* Prevent horizontal scroll on small devices */
+      }
 
-        /* Navigation Bar */
+      /* Navigation Bar */
+      .navbar {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+      }
+
+      .navbar-brand {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      .navbar-links a {
+        color: #555;
+        text-decoration: none;
+        margin-left: 25px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .navbar-links a:hover {
+        color: #007bff;
+      }
+
+      /* Main Content Container */
+      .container {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        padding: 40px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: fadeIn 0.8s ease-out;
+        margin-top: 100px;
+        margin-bottom: 50px;
+        box-sizing: border-box; /* Include padding in width calculation */
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        color: #007bff;
+        margin-bottom: 30px;
+        font-weight: 600;
+        font-size: 2em;
+      }
+
+      /* Button Styling */
+      #getLocationBtn {
+        background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        width: 100%; /* Full width on small screens */
+        max-width: 300px;
+      }
+
+      #getLocationBtn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      #getLocationBtn:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Status Message Styling */
+      #status {
+        margin-top: 30px;
+        font-size: 1.1em;
+        color: #555;
+        min-height: 25px;
+      }
+
+      /* Location Card Styling */
+      .location-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 25px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        box-sizing: border-box;
+      }
+
+      .location-card.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .location-card h3 {
+        color: #007bff;
+        margin-top: 0;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        font-size: 1.2em;
+      }
+
+      .location-card p {
+        margin: 8px 0;
+        font-size: 1em;
+        color: #444;
+      }
+
+      .location-card strong {
+        color: #0056b3;
+      }
+
+      /* Loader Animation */
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+      }
+
+      .loader.active {
+        display: block;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Error message specific styling */
+      .error-message {
+        color: #dc3545;
+        font-weight: 600;
+      }
+
+      /* Footer Styling */
+      .footer {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 0.9em;
+        margin-top: auto;
+        border-top: 2px solid #007bff;
+        box-sizing: border-box;
+      }
+
+      .footer p {
+        margin: 5px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .footer .heart-icon {
+        color: #ff4d4d;
+        margin: 0 5px;
+        animation: pulse 1.5s infinite;
+      }
+
+      .footer a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer a:hover {
+        color: #00f2fe;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Media Queries for Responsiveness */
+
+      /* For screens smaller than 768px (tablets and mobile) */
+      @media (max-width: 768px) {
         .navbar {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
+          flex-direction: column;
+          padding: 15px 20px;
         }
 
         .navbar-brand {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: #007bff;
-            text-decoration: none;
+          margin-bottom: 10px;
         }
 
         .navbar-links a {
-            color: #555;
-            text-decoration: none;
-            margin-left: 25px;
-            font-weight: 500;
-            transition: color 0.3s ease;
+          margin: 0 10px;
+          font-size: 0.9em;
         }
 
-        .navbar-links a:hover {
-            color: #007bff;
-        }
-
-        /* Main Content Container */
         .container {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            animation: fadeIn 0.8s ease-out;
-            margin-top: 100px;
-            margin-bottom: 50px;
-            box-sizing: border-box; /* Include padding in width calculation */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+          padding: 30px 20px;
+          margin-top: 110px; /* Adjust for stacked navbar */
         }
 
         h1 {
-            color: #007bff;
-            margin-bottom: 30px;
-            font-weight: 600;
-            font-size: 2em;
+          font-size: 1.5em;
+          margin-bottom: 20px;
         }
 
-        /* Button Styling */
         #getLocationBtn {
-            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            width: 100%; /* Full width on small screens */
-            max-width: 300px;
-        }
-
-        #getLocationBtn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        #getLocationBtn:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Status Message Styling */
-        #status {
-            margin-top: 30px;
-            font-size: 1.1em;
-            color: #555;
-            min-height: 25px;
-        }
-
-        /* Location Card Styling */
-        .location-card {
-            background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 25px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: left;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            box-sizing: border-box;
-        }
-
-        .location-card.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .location-card h3 {
-            color: #007bff;
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .location-card p {
-            margin: 8px 0;
-            font-size: 1em;
-            color: #444;
-        }
-
-        .location-card strong {
-            color: #0056b3;
-        }
-
-        /* Loader Animation */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-
-        .loader.active {
-            display: block;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error message specific styling */
-        .error-message {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        /* Footer Styling */
-        .footer {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            margin-top: auto;
-            border-top: 2px solid #007bff;
-            box-sizing: border-box;
+          padding: 12px 25px;
+          font-size: 16px;
+          max-width: none;
         }
 
         .footer p {
-            margin: 5px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .footer .heart-icon {
-            color: #ff4d4d;
-            margin: 0 5px;
-            animation: pulse 1.5s infinite;
+          flex-direction: column;
         }
 
         .footer a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
+          margin-top: 5px;
         }
-
-        .footer a:hover {
-            color: #00f2fe;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Media Queries for Responsiveness */
-
-        /* For screens smaller than 768px (tablets and mobile) */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 15px 20px;
-            }
-
-            .navbar-brand {
-                margin-bottom: 10px;
-            }
-
-            .navbar-links a {
-                margin: 0 10px;
-                font-size: 0.9em;
-            }
-
-            .container {
-                padding: 30px 20px;
-                margin-top: 110px; /* Adjust for stacked navbar */
-            }
-
-            h1 {
-                font-size: 1.5em;
-                margin-bottom: 20px;
-            }
-
-            #getLocationBtn {
-                padding: 12px 25px;
-                font-size: 16px;
-                max-width: none;
-            }
-
-            .footer p {
-                flex-direction: column;
-            }
-
-            .footer a {
-                margin-top: 5px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <nav class="navbar">
-        <a href="#" class="navbar-brand">VISHAL PATEL</a>
+      <a href="#" class="navbar-brand">VISHAL PATEL</a>
     </nav>
 
     <div class="container">
-        <h1>📍 Send My Current Location</h1>
-        <button id="getLocationBtn">Get and Send Location</button>
-        <div class="loader" id="loader"></div>
-        <p id="status">Click the button to get your location.</p>
+      <h1>📍 Send My Current Location</h1>
+      <button id="getLocationBtn">Get and Send Location</button>
+      <div class="loader" id="loader"></div>
+      <p id="status">Click the button to get your location.</p>
 
-        <div id="locationDetails" class="location-card">
-            <h3>Your Location Details</h3>
-            <p><strong>Latitude:</strong> <span id="displayLatitude">N/A</span></p>
-            <p><strong>Longitude:</strong> <span id="displayLongitude">N/A</span></p>
-            <p><strong>Accuracy:</strong> <span id="displayAccuracy">N/A</span> meters</p>
-            <p><strong>Timestamp:</strong> <span id="displayTimestamp">N/A</span></p>
-            <p class="server-status"></p>
-        </div>
+      <div id="locationDetails" class="location-card">
+        <h3>Your Location Details</h3>
+        <p><strong>Latitude:</strong> <span id="displayLatitude">N/A</span></p>
+        <p>
+          <strong>Longitude:</strong> <span id="displayLongitude">N/A</span>
+        </p>
+        <p>
+          <strong>Accuracy:</strong>
+          <span id="displayAccuracy">N/A</span> meters
+        </p>
+        <p>
+          <strong>Timestamp:</strong> <span id="displayTimestamp">N/A</span>
+        </p>
+        <p class="server-status"></p>
+      </div>
     </div>
 
     <footer class="footer">
-        <p>
-            Designed with <i class="fas fa-heart heart-icon"></i> by VISHAL PATEL
-        </p>
-        <p>
-            <a href="tel:+918707852404"><i class="fas fa-phone-alt"></i> +91-8707852404</a> <i class="fas fa-map-marker-alt"></i> Ghazipur, Uttar Pradesh, Pincode - 233227
-        </p>
+      <p>
+        Designed with <i class="fas fa-heart heart-icon"></i> by VISHAL PATEL
+      </p>
+      <p>
+        <a href="tel:+918707852404"
+          ><i class="fas fa-phone-alt"></i> +91-8707852404</a
+        >
+        <i class="fas fa-map-marker-alt"></i> Ghazipur, Uttar Pradesh, Pincode -
+        233227
+      </p>
     </footer>
 
     <script>
-        const button = document.getElementById('getLocationBtn');
-        const statusText = document.getElementById('status');
-        const loader = document.getElementById('loader');
-        const locationDetailsCard = document.getElementById('locationDetails');
-        const displayLatitude = document.getElementById('displayLatitude');
-        const displayLongitude = document.getElementById('displayLongitude');
-        const displayAccuracy = document.getElementById('displayAccuracy');
-        const displayTimestamp = document.getElementById('displayTimestamp');
-        const serverStatus = locationDetailsCard.querySelector('.server-status');
+      const button = document.getElementById("getLocationBtn");
+      const statusText = document.getElementById("status");
+      const loader = document.getElementById("loader");
+      const locationDetailsCard = document.getElementById("locationDetails");
+      const displayLatitude = document.getElementById("displayLatitude");
+      const displayLongitude = document.getElementById("displayLongitude");
+      const displayAccuracy = document.getElementById("displayAccuracy");
+      const displayTimestamp = document.getElementById("displayTimestamp");
+      const serverStatus = locationDetailsCard.querySelector(".server-status");
 
-        button.addEventListener('click', () => {
-            statusText.classList.remove('error-message');
-            statusText.textContent = "Waiting for location access permission...";
-            loader.classList.add('active');
-            locationDetailsCard.classList.remove('show');
+      button.addEventListener("click", () => {
+        statusText.classList.remove("error-message");
+        statusText.textContent = "Waiting for location access permission...";
+        loader.classList.add("active");
+        locationDetailsCard.classList.remove("show");
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success, error, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                });
-            } else {
-                statusText.textContent = "Your browser does not support Geolocation.";
-                statusText.classList.add('error-message');
-                loader.classList.remove('active');
-            }
-        });
-
-        function success(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const accuracy = position.coords.accuracy;
-            const timestamp = new Date(position.timestamp).toLocaleString();
-
-            statusText.textContent = "Location successfully retrieved!";
-
-            displayLatitude.textContent = latitude.toFixed(6);
-            displayLongitude.textContent = longitude.toFixed(6);
-            displayAccuracy.textContent = accuracy.toFixed(2);
-            displayTimestamp.textContent = timestamp;
-            locationDetailsCard.classList.add('show');
-
-            fetch('http://localhost:3000/location-receiver', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    latitude: latitude,
-                    longitude: longitude,
-                    accuracy: accuracy,
-                    timestamp: position.timestamp,
-                    userAgent: navigator.userAgent
-                })
-            })
-            .then(response => {
-                loader.classList.remove('active');
-                return response.json();
-            })
-            .then(data => {
-                serverStatus.textContent = `Server response: ${data.message}`;
-                serverStatus.style.color = 'green';
-                console.log('Server response:', data);
-            })
-            .catch(error => {
-                serverStatus.textContent = "Error sending location to server.";
-                serverStatus.style.color = '#dc3545';
-                console.error('An error occurred while sending data to the server:', error);
-            });
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(success, error, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          });
+        } else {
+          statusText.textContent = "Your browser does not support Geolocation.";
+          statusText.classList.add("error-message");
+          loader.classList.remove("active");
         }
+      });
 
-        function error(err) {
-            loader.classList.remove('active');
-            statusText.classList.add('error-message');
-            switch(err.code) {
-                case err.PERMISSION_DENIED:
-                    statusText.textContent = "Location permission denied (User denied Geolocation). Please allow permission in your browser settings.";
-                    break;
-                case err.POSITION_UNAVAILABLE:
-                    statusText.textContent = "Location information is unavailable.";
-                    break;
-                case err.TIMEOUT:
-                    statusText.textContent = "The request to get user location timed out.";
-                    break;
-                default:
-                    statusText.textContent = `An error occurred while getting location: ${err.message}`;
-                    break;
-            }
+      function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        const timestamp = new Date(position.timestamp).toLocaleString();
+
+        statusText.textContent = "Location successfully retrieved!";
+
+        displayLatitude.textContent = latitude.toFixed(6);
+        displayLongitude.textContent = longitude.toFixed(6);
+        displayAccuracy.textContent = accuracy.toFixed(2);
+        displayTimestamp.textContent = timestamp;
+        locationDetailsCard.classList.add("show");
+
+        fetch(
+    "https://script.google.com/macros/s/AKfycbwLSKj7rwVJYhfe52r9IjFzgj9BLnXXHlRvuKL3wje15l-ES-WPWlfdSC33uhxXiFd0AQ/exec",
+    {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            latitude: latitude,
+            longitude: longitude,
+            accuracy: accuracy,
+            timestamp: new Date().toLocaleString(),
+            userAgent: navigator.userAgent,
+        }),
+    }
+)
+    .then(() => {
+        loader.classList.remove("active");
+        serverStatus.textContent = "Location saved successfully!";
+        serverStatus.style.color = "green";
+        console.log("Location saved successfully to Google Sheet!");
+    })
+    .catch((error) => {
+        loader.classList.remove("active");
+        serverStatus.textContent = "Error sending location to server. Check your network.";
+        serverStatus.style.color = "#dc3545";
+        console.error("An error occurred while sending data:", error);
+    });
+}
+
+      function error(err) {
+        loader.classList.remove("active");
+        statusText.classList.add("error-message");
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            statusText.textContent =
+              "Location permission denied (User denied Geolocation). Please allow permission in your browser settings.";
+            break;
+          case err.POSITION_UNAVAILABLE:
+            statusText.textContent = "Location information is unavailable.";
+            break;
+          case err.TIMEOUT:
+            statusText.textContent =
+              "The request to get user location timed out.";
+            break;
+          default:
+            statusText.textContent = `An error occurred while getting location: ${err.message}`;
+            break;
         }
+      }
     </script>
-
-</body>
+  </body>
 </html>
